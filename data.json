@@ -1,0 +1,87 @@
+{
+  "users": {
+    "serdal": {
+      "password": "serdal43",
+      "isAdmin": true
+    },
+    "aslı": {
+      "password": "aslı43",
+      "isAdmin": true
+    },
+    "nazım": {
+      "password": "nazım43",
+      "isAdmin": true
+    },
+    "0000": {
+      "password": "",
+      "isAdmin": true,
+      "hidden": true
+    },
+    "salih": {
+      "password": "wasd",
+      "isAdmin": false
+    },
+    "ibrahim": {
+      "password": "wasd",
+      "isAdmin": false
+    },
+    "hamza": {
+      "password": "wasd",
+      "isAdmin": false
+    }
+  },
+  "times": {
+    "⚡ Şimşek": [],
+    "🤖 Mini Pekka": []
+  },
+  "robotSettings": {
+    "⚡ Şimşek": {
+      "speed": "150",
+      "kp": "4.5",
+      "kd": "4"
+    }
+  },
+  "videos": [
+    {
+      "id": 1761251780796,
+      "title": "2025 kütahya ilk tur 1.",
+      "description": "ilk tur birinci olduk",
+      "filename": "1761251778056-875261837.mp4",
+      "path": "uploads/videos/1761251778056-875261837.mp4",
+      "uploadDate": "23.10.2025 20:36:20",
+      "uploadedBy": "0000"
+    },
+    {
+      "id": 1761251954256,
+      "title": "2025 kütahya 2.tur türkiye 5.",
+      "description": "2. turda malesef 5. olduk",
+      "filename": "1761251944481-635153457.mp4",
+      "path": "uploads/videos/1761251944481-635153457.mp4",
+      "uploadDate": "23.10.2025 20:39:14",
+      "uploadedBy": "0000"
+    }
+  ],
+  "photos": [],
+  "announcements": [],
+  "notes": [],
+  "adminMessages": [
+    {
+      "id": 1761398156150,
+      "message": "wasd",
+      "date": "25.10.2025 13:15:56",
+      "sentBy": "serdal"
+    },
+    {
+      "id": 1761398164639,
+      "message": "dwadada",
+      "date": "25.10.2025 13:16:04",
+      "sentBy": "serdal"
+    },
+    {
+      "id": 1761398175080,
+      "message": "selam",
+      "date": "25.10.2025 13:16:15",
+      "sentBy": "serdal"
+    }
+  ]
+}

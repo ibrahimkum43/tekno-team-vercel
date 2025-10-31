@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>RoBoTeAm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('attached_assets/bg1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      transition: background-image 2s ease-in-out, background-color 0.5s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    
+    body.logged-in {
+      background-image: none !important;
+      background-color: #000;
+      position: relative;
+      padding: 0 !important;
+      overflow-y: auto;
+    }
+    
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      display: none;
+      max-width: none;
+      max-height: none;
+      border-radius: 0;
+      margin: 0;
+    }
+    
+    body.logged-in #bgVideo {
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 8px;
+        min-height: 100vh;
+      }
+      
+      .container {
+        padding: 20px 15px;
+        max-width: 100%;
+        margin: 10px 0;
+      }
+      
+      .panel-container {
+        padding: 20px 12px;
+        max-width: 100%;
+        margin: 10px 0;
+      }
+      
+      .modal-content {
+        padding: 30px 20px;
+        max-width: 95%;
+        max-height: 90vh;
+      }
+      
+      .modal-content h2 {
+        font-size: 22px;
+        margin-bottom: 15px;
+      }
+      
+      .modal-content p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      
+      button {
+        padding: 12px 18px;
+        font-size: 15px;
+        min-height: 44px;
+        border-radius: 10px;
+      }
+      
+      .robot-btn {
+        padding: 18px 25px;
+        font-size: 16px;
+        min-width: 140px;
+        min-height: 80px;
+      }
+      
+      .robot-buttons {
+        gap: 15px;
+      }
+      
+      .control-btn {
+        padding: 14px 20px;
+        font-size: 15px;
+        min-width: 110px;
+        min-height: 48px;
+      }
+      
+      .timer-display {
+        font-size: 56px;
+        margin: 20px 0;
+      }
+      
+      input, textarea {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+      
+      .settings-btn, .home-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+        min-height: 40px;
+      }
+      
+      .media-list, .user-list {
+        max-height: 300px;
+      }
+      
+      .rgb-title {
+        font-size: 28px;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px 10px;
+      }
+      
+      .panel-container {
+        padding: 15px 10px;
+      }
+      
+      .robot-btn {
+        padding: 15px 20px;
+        font-size: 15px;
+        min-width: 120px;
+        min-height: 70px;
+        flex: 1 1 calc(50% - 10px);
+      }
+      
+      .robot-buttons {
+        gap: 10px;
+      }
+      
+      .timer-display {
+        font-size: 48px;
+        letter-spacing: 2px;
+      }
+      
+      .timer-controls {
+        gap: 10px;
+      }
+      
+      .control-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-width: 100px;
+      }
+      
+      button {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+      
+      .modal-content {
+        padding: 25px 15px;
+      }
+      
+      .modal-content h2 {
+        font-size: 20px;
+      }
+      
+      .modal-content p {
+        font-size: 15px;
+      }
+      
+      .rgb-title {
+        font-size: 24px;
+      }
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.06);
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .panel-container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+      position: relative;
+    }
+    
+    h2 {
+      color: rgba(255, 255, 255, 0.6);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    
+    input, textarea {
+      width: 90%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.95);
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+    
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: rgba(100, 149, 237, 0.8);
+      background-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 15px rgba(100, 149, 237, 0.3);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    
+    input::placeholder, textarea::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: rgba(76, 175, 80, 0.4);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      will-change: transform;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+      will-change: width, height;
+    }
+    
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    button:hover {
+      background-color: rgba(69, 160, 73, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    
+    .guest-btn {
+      background-color: rgba(100, 149, 237, 0.4);
+      margin-left: 10px;
+    }
+    
+    .guest-btn:hover {
+      background-color: rgba(100, 149, 237, 0.6);
+      box-shadow: 0 4px 12px rgba(100, 149, 237, 0.4);
+    }
+    
+    .robot-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    
+    .robot-btn {
+      background-color: rgba(100, 149, 237, 0.5);
+      padding: 20px 30px;
+      font-size: 18px;
+      min-width: 150px;
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      will-change: transform;
+    }
+    
+    .robot-btn:hover {
+      background-color: rgba(100, 149, 237, 0.7);
+      transform: scale(1.08) translateY(-3px) translateZ(0);
+      box-shadow: 0 6px 20px rgba(100, 149, 237, 0.5);
+    }
+    
+    .robot-btn:active {
+      transform: scale(1.02) translateY(0) translateZ(0);
+    }
+    
+    .timer-display {
+      font-size: 72px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      margin: 30px 0;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 4px;
+    }
+    
+    .timer-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    
+    .control-btn {
+      background-color: rgba(100, 149, 237, 0.5);
+      padding: 12px 24px;
+      font-size: 16px;
+      min-width: 120px;
+      border-radius: 10px;
+    }
+    
+    .control-btn:hover {
+      background-color: rgba(100, 149, 237, 0.7);
+      box-shadow: 0 4px 15px rgba(100, 149, 237, 0.5);
+    }
+    
+    .save-btn {
+      background-color: rgba(76, 175, 80, 0.5);
+    }
+    
+    .save-btn:hover {
+      background-color: rgba(76, 175, 80, 0.7);
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
+    }
+    
+    .admin-btn {
+      background-color: rgba(255, 165, 0, 0.5);
+    }
+    
+    .admin-btn:hover {
+      background-color: rgba(255, 165, 0, 0.7);
+      box-shadow: 0 4px 15px rgba(255, 165, 0, 0.5);
+    }
+    
+    .saved-times {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .saved-times h3 {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 15px;
+    }
+    
+    .time-entry, .media-entry {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+    }
+    
+    .time-entry .time-info, .media-entry .media-info {
+      flex: 1;
+      text-align: left;
+    }
+    
+    .time-entry button, .media-entry button {
+      margin: 0;
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: rgba(220, 53, 69, 0.5);
+      min-width: auto;
+    }
+    
+    .time-entry button:hover, .media-entry button:hover {
+      background-color: rgba(220, 53, 69, 0.7);
+      box-shadow: 0 3px 10px rgba(220, 53, 69, 0.4);
+    }
+    
+    .user-form, .media-form {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    
+    .user-list, .media-list {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .user-item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .user-item button {
+      margin: 0;
+      padding: 5px 10px;
+      font-size: 12px;
+      background-color: rgba(220, 53, 69, 0.5);
+      min-width: auto;
+    }
+    
+    .user-item button:hover {
+      background-color: rgba(220, 53, 69, 0.7);
+      box-shadow: 0 3px 10px rgba(220, 53, 69, 0.4);
+    }
+
+    .settings-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 8px 15px;
+      font-size: 14px;
+      background-color: rgba(255, 193, 7, 0.5);
+      margin: 0;
+      border-radius: 8px;
+    }
+
+    .settings-btn:hover {
+      background-color: rgba(255, 193, 7, 0.7);
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    }
+
+    .robot-settings {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .robot-settings input {
+      width: 45%;
+      display: inline-block;
+      margin: 5px 2%;
+    }
+
+    video, img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    #adminMessageModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    #adminMessageModal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(100, 149, 237, 0.3));
+      padding: 60px 80px;
+      border-radius: 20px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      text-align: center;
+      animation: modalSlideIn 0.5s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-content h2 {
+      color: rgba(255, 255, 255, 1);
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .modal-content p {
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 20px;
+      line-height: 1.6;
+      margin: 20px 0;
+      white-space: pre-wrap;
+    }
+
+    .modal-content small {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      display: block;
+      margin-top: 30px;
+    }
+
+    .modal-hint {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      margin-top: 40px;
+      font-style: italic;
+    }
+
+    #sonuc {
+      margin-top: 15px;
+      font-weight: bold;
+      white-space: pre-line;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    .rgb-title {
+      font-size: 36px;
+      font-weight: bold;
+      animation: rgbAnimation 3s linear infinite;
+      background: linear-gradient(90deg, 
+        rgb(255, 0, 0), 
+        rgb(255, 127, 0), 
+        rgb(255, 255, 0), 
+        rgb(0, 255, 0), 
+        rgb(0, 0, 255), 
+        rgb(75, 0, 130), 
+        rgb(148, 0, 211),
+        rgb(255, 0, 0)
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    @keyframes rgbAnimation {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    
+    .home-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 15px;
+      font-size: 14px;
+      background-color: rgba(100, 149, 237, 0.5);
+      margin: 0;
+      border-radius: 8px;
+    }
+    
+    .home-btn:hover {
+      background-color: rgba(100, 149, 237, 0.7);
+      box-shadow: 0 4px 12px rgba(100, 149, 237, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <video id="bgVideo" autoplay loop muted playsinline>
+    <source src="attached_assets/ilk10_1761256316398.mp4" type="video/mp4">
+  </video>
+
+  <!-- Giriş Ekranı -->
+  <div id="loginScreen" class="container">
+    <h2 class="rgb-title">ROBOTEAM</h2>
+    <label for="kullanici">Kullanıcı Adı:</label>
+    <input type="text" id="kullanici" placeholder="Kullanıcı adını girin">
+    <label for="sifre">Şifre:</label>
+    <input type="password" id="sifre" placeholder="Şifreyi girin">
+    <button onclick="girisYap()">Giriş Yap</button>
+    <button class="guest-btn" onclick="misafirGirisi()">👤 Misafir Girişi</button>
+    <div id="sonuc"></div>
+  </div>
+
+  <!-- Yönetim Paneli (Robot Seçim Ekranı) -->
+  <div id="panelScreen" class="panel-container hidden">
+    <button class="settings-btn hidden" style="left: 10px; right: auto;" onclick="cikisYap()">🚪 Çıkış Yap</button>
+    <button class="home-btn hidden" style="left: 10px; right: auto;" onclick="anaSayfayaDon()">🏠 Ana Sayfaya Dön</button>
+    <button class="settings-btn hidden" onclick="sifreDegistirModal()">🔐 Şifre Değiştir</button>
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">Yönetim Paneli</h2>
+    <p style="color: rgba(255,255,255,0.6); font-size: 18px;" id="welcomeText">Bir robot kategorisi seçin:</p>
+    <div class="robot-buttons" id="mainButtons">
+      <button class="robot-btn" onclick="robotSec('⚡ Şimşek')">⚡<br>Şimşek</button>
+      <button class="robot-btn" onclick="robotSec('🤖 Mini Pekka')">🤖<br>Mini Pekka</button>
+      <button class="robot-btn" onclick="robotSec('♻️ Geri Dönüşüm')">♻️<br>Geri Dönüşüm</button>
+    </div>
+
+    <!-- Misafir için Video, Fotoğraf ve Duyuru Butonları -->
+    <div class="robot-buttons" id="guestMediaButtons" class="hidden">
+      <button class="robot-btn" onclick="showVideos()">🎥<br>Videolar</button>
+      <button class="robot-btn" onclick="showPhotos()">📷<br>Fotoğraflar</button>
+      <button class="robot-btn" onclick="showAnnouncements()">📢<br>Duyurular</button>
+    </div>
+    
+    <!-- Kullanıcılar için Notlar Butonu -->
+    <div class="robot-buttons" id="userNotesButton" class="hidden">
+      <button class="robot-btn" onclick="showNotes()">📝<br>Notlar</button>
+    </div>
+    
+    <!-- Admin Kullanıcı Yönetimi -->
+    <div id="adminPanel" class="hidden">
+      <div class="user-form">
+        <h3 style="color: rgba(255,255,255,0.8);">👤 Kullanıcı Ekle</h3>
+        <label for="newUsername">Yeni Kullanıcı Adı:</label>
+        <input type="text" id="newUsername" placeholder="Kullanıcı adı">
+        <label for="newPassword">Şifre:</label>
+        <input type="password" id="newPassword" placeholder="Şifre">
+        <button class="admin-btn" onclick="kullaniciEkle()">➕ Kullanıcı Ekle</button>
+        <div id="adminSonuc" style="margin-top: 10px;"></div>
+      </div>
+      
+      <div class="user-list">
+        <h3 style="color: rgba(255,255,255,0.8);">📋 Kullanıcı Listesi</h3>
+        <div id="userListDiv"></div>
+      </div>
+    </div>
+
+    <!-- Admin Video Yönetimi -->
+    <div id="adminVideoPanel" class="hidden">
+      <div class="media-form">
+        <h3 style="color: rgba(255,255,255,0.8);">🎥 Video Ekle</h3>
+        <label for="videoTitle">Video Başlığı:</label>
+        <input type="text" id="videoTitle" placeholder="Video başlığı">
+        <label for="videoDescription">Açıklama:</label>
+        <textarea id="videoDescription" placeholder="Video açıklaması (opsiyonel)"></textarea>
+        <label for="videoFile">Video Dosyası:</label>
+        <input type="file" id="videoFile" accept="video/*" style="width: 90%; padding: 8px;">
+        <button class="admin-btn" onclick="videoEkle()">➕ Video Yükle</button>
+        <div id="videoSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- Admin Fotoğraf Yönetimi -->
+    <div id="adminPhotoPanel" class="hidden">
+      <div class="media-form">
+        <h3 style="color: rgba(255,255,255,0.8);">📷 Fotoğraf Ekle</h3>
+        <label for="photoTitle">Fotoğraf Başlığı:</label>
+        <input type="text" id="photoTitle" placeholder="Fotoğraf başlığı">
+        <label for="photoDescription">Açıklama:</label>
+        <textarea id="photoDescription" placeholder="Fotoğraf açıklaması (opsiyonel)"></textarea>
+        <label for="photoFile">Fotoğraf Dosyası:</label>
+        <input type="file" id="photoFile" accept="image/*" style="width: 90%; padding: 8px;">
+        <button class="admin-btn" onclick="fotografEkle()">➕ Fotoğraf Yükle</button>
+        <div id="photoSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- Admin Duyuru Yönetimi -->
+    <div id="adminAnnouncementPanel" class="hidden">
+      <div class="user-form">
+        <h3 style="color: rgba(255,255,255,0.8);">📢 Duyuru Ekle</h3>
+        <label for="announcementTitle">Başlık:</label>
+        <input type="text" id="announcementTitle" placeholder="Duyuru başlığı">
+        <label for="announcementContent">İçerik:</label>
+        <textarea id="announcementContent" placeholder="Duyuru içeriği"></textarea>
+        <button class="admin-btn" onclick="duyuruEkle()">➕ Duyuru Ekle</button>
+        <div id="announcementSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- Admin Mesaj Gönderme Paneli -->
+    <div id="adminMessagePanel" class="hidden">
+      <div class="user-form">
+        <h3 style="color: rgba(255,255,255,0.8);">💬 Herkese Mesaj Gönder</h3>
+        <label for="adminMessage">Mesaj:</label>
+        <textarea id="adminMessage" placeholder="Tüm kullanıcılara gönderilecek mesaj"></textarea>
+        <button class="admin-btn" onclick="adminMesajGonder()">📤 Mesaj Gönder</button>
+        <div id="adminMessageSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kronometre Ekranı -->
+  <div id="timerScreen" class="panel-container hidden">
+    <button class="home-btn hidden" id="guestTimerBackBtn" style="left: 10px;" onclick="geriDon()">🏠 Geri Dön</button>
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 28px;" id="selectedRobot"></h2>
+    
+    <!-- Robot Ayarları -->
+    <div id="robotSettingsDiv" class="robot-settings hidden">
+      <h3 style="color: rgba(255,255,255,0.8);">⚙️ Robot Ayarları</h3>
+      <input type="text" id="robotSpeed" placeholder="Hız" style="width: 28%;">
+      <input type="text" id="robotKp" placeholder="KP" style="width: 28%;">
+      <input type="text" id="robotKd" placeholder="KD" style="width: 28%;">
+      <button class="admin-btn" onclick="robotAyarlariKaydet()" style="margin-top: 10px;">💾 Ayarları Kaydet</button>
+      <div id="settingsSonuc" style="margin-top: 10px;"></div>
+    </div>
+
+    <div class="timer-display" id="timerDisplay">00:00.00</div>
+    <div class="timer-controls" id="timerControlsDiv">
+      <button class="control-btn" onclick="startTimer()">▶ Başlat</button>
+      <button class="control-btn" onclick="pauseTimer()">⏸ Durdur</button>
+      <button class="control-btn" onclick="resetTimer()">🔄 Sıfırla</button>
+      <button class="control-btn save-btn" onclick="bitir()">✓ Bitir ve Kaydet</button>
+      <button class="control-btn" onclick="geriDon()">← Geri Dön</button>
+    </div>
+    
+    <!-- Kaydedilen Süreler -->
+    <div class="saved-times">
+      <h3>Kaydedilen Süreler (Tüm Kullanıcılar)</h3>
+      <div id="savedTimesList"></div>
+    </div>
+  </div>
+
+  <!-- Kaydet Ekranı -->
+  <div id="saveScreen" class="panel-container hidden">
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">Kronometre Tamamlandı!</h2>
+    <div class="timer-display" id="finalTime">00:00.00</div>
+    <p style="color: rgba(255,255,255,0.7); font-size: 20px; margin: 20px 0;">Süre kaydedildi ✓</p>
+    <div class="timer-controls">
+      <button class="control-btn save-btn" onclick="yenidenBaslat()">🔄 Yeniden Başlat</button>
+      <button class="control-btn" onclick="geriDon()">← Geri Dön</button>
+    </div>
+  </div>
+
+  <!-- Videolar Ekranı -->
+  <div id="videosScreen" class="panel-container hidden">
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">🎥 Videolar</h2>
+    <button class="control-btn" onclick="geriDon()" style="margin-top: 10px;">← Geri Dön</button>
+    
+    <div id="adminVideoManagement" class="hidden">
+      <div class="media-form">
+        <h3 style="color: rgba(255,255,255,0.8);">Video Ekle</h3>
+        <label for="newVideoTitle">Başlık:</label>
+        <input type="text" id="newVideoTitle" placeholder="Video başlığı">
+        <label for="newVideoDescription">Açıklama:</label>
+        <textarea id="newVideoDescription" placeholder="Açıklama (opsiyonel)"></textarea>
+        <label for="newVideoFile">Video Dosyası:</label>
+        <input type="file" id="newVideoFile" accept="video/*" style="width: 90%; padding: 8px;">
+        <button class="admin-btn" onclick="videoYukle()">➕ Yükle</button>
+        <div id="newVideoSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <div class="media-list">
+      <h3 style="color: rgba(255,255,255,0.8);">Video Listesi</h3>
+      <div id="videoListDiv"></div>
+    </div>
+  </div>
+
+  <!-- Fotoğraflar Ekranı -->
+  <div id="photosScreen" class="panel-container hidden">
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">📷 Fotoğraflar</h2>
+    <button class="control-btn" onclick="geriDon()" style="margin-top: 10px;">← Geri Dön</button>
+    
+    <div id="adminPhotoManagement" class="hidden">
+      <div class="media-form">
+        <h3 style="color: rgba(255,255,255,0.8);">Fotoğraf Ekle</h3>
+        <label for="newPhotoTitle">Başlık:</label>
+        <input type="text" id="newPhotoTitle" placeholder="Fotoğraf başlığı">
+        <label for="newPhotoDescription">Açıklama:</label>
+        <textarea id="newPhotoDescription" placeholder="Açıklama (opsiyonel)"></textarea>
+        <label for="newPhotoFile">Fotoğraf Dosyası:</label>
+        <input type="file" id="newPhotoFile" accept="image/*" style="width: 90%; padding: 8px;">
+        <button class="admin-btn" onclick="fotografYukle()">➕ Yükle</button>
+        <div id="newPhotoSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <div class="media-list">
+      <h3 style="color: rgba(255,255,255,0.8);">Fotoğraf Listesi</h3>
+      <div id="photoListDiv"></div>
+    </div>
+  </div>
+
+  <!-- Duyurular Ekranı -->
+  <div id="announcementsScreen" class="panel-container hidden">
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">📢 Duyurular</h2>
+    <button class="control-btn" onclick="geriDon()" style="margin-top: 10px;">← Geri Dön</button>
+    
+    <div id="adminAnnouncementManagement" class="hidden">
+      <div class="media-form">
+        <h3 style="color: rgba(255,255,255,0.8);">Duyuru Ekle</h3>
+        <label for="newAnnouncementTitle">Başlık:</label>
+        <input type="text" id="newAnnouncementTitle" placeholder="Duyuru başlığı">
+        <label for="newAnnouncementContent">İçerik:</label>
+        <textarea id="newAnnouncementContent" placeholder="Duyuru içeriği"></textarea>
+        <button class="admin-btn" onclick="duyuruYayinla()">➕ Duyuru Yayınla</button>
+        <div id="newAnnouncementSonuc" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <div class="media-list">
+      <h3 style="color: rgba(255,255,255,0.8);">Duyuru Listesi</h3>
+      <div id="announcementListDiv"></div>
+    </div>
+  </div>
+
+  <!-- Notlar Ekranı -->
+  <div id="notesScreen" class="panel-container hidden">
+    <h2 style="color: rgba(255,255,255,0.8); font-size: 32px;">📝 Notlar</h2>
+    <button class="control-btn" onclick="geriDon()" style="margin-top: 10px;">← Geri Dön</button>
+    
+    <div class="media-form">
+      <h3 style="color: rgba(255,255,255,0.8);">Not Ekle</h3>
+      <label for="newNoteTitle">Başlık:</label>
+      <input type="text" id="newNoteTitle" placeholder="Not başlığı">
+      <label for="newNoteContent">İçerik:</label>
+      <textarea id="newNoteContent" placeholder="Not içeriği"></textarea>
+      <button class="admin-btn" onclick="notEkle()">➕ Not Ekle</button>
+      <div id="newNoteSonuc" style="margin-top: 10px;"></div>
+    </div>
+
+    <div class="media-list">
+      <h3 style="color: rgba(255,255,255,0.8);">Not Listesi</h3>
+      <div id="noteListDiv"></div>
+    </div>
+  </div>
+
+  <!-- Admin Mesaj Modal -->
+  <div id="adminMessageModal" onclick="closeAdminMessageModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h2>📬 Admin Mesajı</h2>
+      <p id="modalMessageContent"></p>
+      <small id="modalMessageInfo"></small>
+      <div class="modal-hint" onclick="event.stopPropagation(); closeAdminMessageModal();" style="cursor: pointer;">Devam etmek için buraya tıklayın</div>
+    </div>
+  </div>
+
+  <!-- Şifre Değiştirme Modal -->
+  <div id="passwordModal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; max-width: 400px;">
+    <h2>🔐 Şifre Değiştir</h2>
+    <label for="oldPassword">Eski Şifre:</label>
+    <input type="password" id="oldPassword" placeholder="Eski şifreniz">
+    <label for="newPasswordInput">Yeni Şifre:</label>
+    <input type="password" id="newPasswordInput" placeholder="Yeni şifreniz">
+    <button onclick="sifreDegistir()">✓ Değiştir</button>
+    <button class="guest-btn" onclick="sifreDegistirKapat()">✕ İptal</button>
+    <div id="passwordSonuc" style="margin-top: 10px;"></div>
+  </div>
+
+  <!-- Not Düzenleme Modal -->
+  <div id="noteEditModal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; max-width: 500px;">
+    <h2>✏️ Not Düzenle</h2>
+    <label for="editNoteTitle">Başlık:</label>
+    <input type="text" id="editNoteTitle" placeholder="Not başlığı">
+    <label for="editNoteContent">İçerik:</label>
+    <textarea id="editNoteContent" placeholder="Not içeriği" style="min-height: 120px;"></textarea>
+    <button onclick="notGuncelle()">✓ Kaydet</button>
+    <button class="guest-btn" onclick="notDuzenleKapat()">✕ İptal</button>
+    <div id="editNoteSonuc" style="margin-top: 10px;"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
