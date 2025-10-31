@@ -1,16 +1,30 @@
 {
   "name": "robotteam-api-supabase",
   "version": "1.0.0",
+  "private": true,
   "main": "api/index.js",
   "type": "commonjs",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "dev": "nodemon --watch api --exec \"node api/index.js\"",
+    "build": "echo \"No build step for serverless API\"",
+    "vercel-build": "npm run build",
+    "migrate-uploads": "node migrate_uploads_to_supabase.js",
+    "lint": "echo \"No linter configured\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.29.0",
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "serverless-http": "^3.2.0",
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "dotenv": "^16.3.1",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
